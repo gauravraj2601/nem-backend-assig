@@ -14,10 +14,10 @@ userRouter.post("/register", async(req, res)=>{
         bcrypt.hash(pass, 5, async(err, hash)=> {
             const user= new UserModel({username,email,pass:hash})
             await user.save()
-            res.status(200).send({"msg":"The new user has been registered", "registeredUser":user})
+            res.status(200).json({msg:"The new user has been registered", user})
         });
     } catch (error) {
-        res.status(400).send({"error":error})
+        res.status(400).json({error:error})
         
     }
 })
@@ -28,17 +28,17 @@ userRouter.post("/login", async(req,res)=>{
         if(user){
             bcrypt.compare(pass, user.pass,(err, result)=> {
                 if(result){
-                    res.status(200).send({"msg":"Login successful!",
-                    "token":jwt.sign({userId:user._id,username:user.username }, 'masai')})
+                    res.status(200).json({msg:"Login successful!",
+                    token:jwt.sign({userId:user._id,username:user.username }, 'masai')})
                 }
                 // result == true
             });
         }
         else{
-            res.status(200).send({msg:"Wrong Credentials"})
+            res.status(200).json({msg:"Wrong Credentials"})
         }
     } catch (error) {
-        res.status(400).send({"error":error})
+        res.status(400).json({error:error})
     }
 })
 
